@@ -1,4 +1,5 @@
 <?php
+
 namespace app\index\controller;
 
 use app\common\extend\API;
@@ -15,13 +16,16 @@ class Index
         $classifier->init($classifiModel);
 
         $list = model('Learn')->column('id,type,sample');
-        foreach ($list as $k => $v){
+        foreach ($list as $k => $v) {
             $classifier->learn($v['sample'], $v['type']);
             //print_r($classifier->getWords($v['sample']));
         }
-        print_r($classifier->types);echo '<br/><br/>';
-        print_r($classifier->words);echo '<br/><br/>';
-        print_r($classifier->documents);echo '<br/><br/>';
+        print_r($classifier->types);
+        echo '<br/><br/>';
+        print_r($classifier->words);
+        echo '<br/><br/>';
+        print_r($classifier->documents);
+        echo '<br/><br/>';
 
         $queue = Queue::getInstance();
         $queue->init('classifier');
@@ -36,12 +40,15 @@ class Index
         echo '</pre>';
         $queue->destory();
 
-        $rs = model('Example')->page(5,20)->select();
+        $rs = model('Example')->page(5, 20)->select();
 
-        foreach ($rs as $k => $v){
+        $content = '';
+        foreach ($rs as $k => $v) {
             //var_dump($classifier->guess($v)); // string(8) "positive"
-            echo $v['title'],'---',$classifier->guess($v['title']),'<br>';
+            $content .= $v['title'].'---'.$classifier->guess($v['title']).'<br>';
         }
 
+        $msg = send_mail('songguanjin@258.com', '测试邮件', $content) ? '成功' : '失败';
+        echo $msg;
     }
 }
