@@ -1,21 +1,20 @@
 <?php
 namespace app\index\controller;
 
-use app\common\service\Type;
-use app\common\model\Area;
-use app\common\model\Example;
-use app\common\model\Learn;
-
+use app\common\extend\API;
+use app\common\extend\Classifier;
+use app\common\extend\Queue;
 
 class Index
 {
     public function index()
     {
-        echo 211148 ^ 1234;
-        $classifiModel = Area::column('area');
-        $classifier = new \app\common\service\Classifier($classifiModel);
+        $classifiModel = model('Area')->column('area');
+        //$classifier = new Classifier($classifiModel);
+        $classifier = Classifier::getInstance();
+        $classifier->init($classifiModel);
 
-        $list = Learn::column('id,type,sample');
+        $list = model('Learn')->column('id,type,sample');
         foreach ($list as $k => $v){
             $classifier->learn($v['sample'], $v['type']);
             //print_r($classifier->getWords($v['sample']));
@@ -24,15 +23,25 @@ class Index
         print_r($classifier->words);echo '<br/><br/>';
         print_r($classifier->documents);echo '<br/><br/>';
 
-        echo $classifier->guess('醴陵'),'<br>';
-        echo $classifier->guess('北京'),'<br>';
-        echo $classifier->guess('成都'),'<br>';
-        $example = new Example();
-        $rs = $example->limit(20)->select();
+        $queue = Queue::getInstance();
+        $queue->init('classifier');
+        $queue->enQueue($classifier->guess('醴陵'));
+        $queue->enQueue($classifier->guess('北京'));
+        $queue->enQueue($classifier->guess('石家庄啊师'));
+        $queue->enQueue($classifier->guess('阿啊上海'));
+        $queue->enQueue($classifier->guess('的股北京斯'));
+        $queue->enQueue($classifier->guess('天宇国际'));
+        echo '<pre>';
+        print_r($queue->enQueue($classifier->guess('很明白成都')));
+        echo '</pre>';
+        $queue->destory();
+
+        $rs = model('Example')->page(5,20)->select();
 
         foreach ($rs as $k => $v){
             //var_dump($classifier->guess($v)); // string(8) "positive"
             echo $v['title'],'---',$classifier->guess($v['title']),'<br>';
         }
+
     }
 }
