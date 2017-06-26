@@ -27,7 +27,7 @@ use think\Exception;
  * @author Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
  * @author Brent R. Matzelle (original founder)
  */
-class PHPMailer
+class PHPMailer extends Factory
 {
     /**
      * The PHPMailer Version number.

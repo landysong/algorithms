@@ -18,6 +18,7 @@
  */
 function get_split_word($statement, $num = null)
 {
+    if (empty($statement)) return false;
     $pscws = \app\common\extend\PSCWS4::getInstance();
     $pscws->set_dict(DICT_PATH . 'dict.utf8.xdb');
     $pscws->set_rule(DICT_PATH . 'rules.utf8.ini');
@@ -36,7 +37,8 @@ function get_split_word($statement, $num = null)
 
 function send_mail($toemail, $subject, $body)
 {
-    $mail = new \app\common\extend\PHPMailer();
+    if(empty($toemail) || empty($subject) || empty($body)) return false;
+    $mail = \app\common\extend\PHPMailer::getInstance();
 
     //是否启用smtp的debug进行调试 开发环境建议开启 生产环境注释掉即可 默认关闭debug调试模式
     $mail->SMTPDebug = 0;

@@ -230,4 +230,15 @@ return [
         'var_page'  => 'page',
         'list_rows' => 15,
     ],
+
+    //email发信设置 可以在后台进行设置
+    'email_config' => array(
+        'secure'        => 'ssl',     //链接加密方式 Options: "", "ssl" or "tls"; 为空时, 端口一般是25; ssl , 端口一般为 465 ;
+        'host'        => 'smtp.qq.com',     //SMTP 服务器
+        'port'    => '465',    //SMTP 端口, 一般为25, QQ为465或587
+        'username'    =>'476937654', //邮箱帐号
+        'psw' => 'bhpopigghhahcaic', //邮箱密码 QQ使用SMTP授权码 uwrfbgqqfodjfaea
+        'From' => '476937654@qq.com', //发件人地址
+        'FromName' => 'landy', //发件人姓名
+    ),
 ];
