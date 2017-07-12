@@ -23,7 +23,7 @@ class Queue extends Factory
             'type' => 'File',
             // 缓存有效期为永久有效
             'expire' => 0,
-            //缓存前缀
+            // 缓存前缀
             'prefix' => 'queue',
             // 指定缓存目录
             'path' => APP_PATH . 'runtime/cache/',

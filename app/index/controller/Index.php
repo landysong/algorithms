@@ -5,6 +5,7 @@ namespace app\index\controller;
 use app\common\extend\API;
 use app\common\extend\Classifier;
 use app\common\extend\Queue;
+use think\Cache;
 
 class Index
 {
@@ -18,7 +19,7 @@ class Index
         $list = model('Learn')->column('id,type,sample');
         foreach ($list as $k => $v) {
             $classifier->learn($v['sample'], $v['type']);
-            //print_r($classifier->getWords($v['sample']));
+            print_r($classifier->getWords($v['sample']));
         }
         print_r($classifier->types);
         echo '<br/><br/>';
@@ -35,9 +36,7 @@ class Index
         $queue->enQueue($classifier->guess('阿啊上海'));
         $queue->enQueue($classifier->guess('的股北京斯'));
         $queue->enQueue($classifier->guess('天宇国际'));
-        echo '<pre>';
-        print_r($queue->enQueue($classifier->guess('很明白成都')));
-        echo '</pre>';
+        $queue->enQueue($classifier->guess('很明白成都'));
         $queue->destory();
 
         $rs = model('Example')->page(5, 20)->select();
@@ -45,10 +44,38 @@ class Index
         $content = '';
         foreach ($rs as $k => $v) {
             //var_dump($classifier->guess($v)); // string(8) "positive"
-            $content .= $v['title'].'---'.$classifier->guess($v['title']).'<br>';
+            $content .= $v['title'] . '---' . $classifier->guess($v['title']) . '<br>';
         }
 
-        $msg = send_mail('songguanjin@258.com', '测试邮件', $content) ? '成功' : '失败';
-        echo $msg;
+        /*$msg = send_mail('songguanjin@258.com', '测试邮件', $content) ? '成功' : '失败';
+        echo $msg;*/
+    }
+
+    public function quickSort()
+    {
+        $arr = generate_rand_sequence( 20);
+        print_r(quick_sort($arr));
+    }
+
+    public function binarySearch()
+    {
+        $arr = quick_sort(generate_rand_sequence( 20));
+        echo binary_search($arr, 5);
+    }
+
+    public function hash()
+    {
+        $cKey = get_str_hash('Example,5,20');
+        $hashTable = Cache::get($cKey);
+        if (!empty($hashTable)) {
+            $r = model('Example')->page(5, 20)->select();
+            foreach ($r as $k => $v) {
+                $hashTable[get_str_hash($v['title'])] = $v['title'];
+            }
+            Cache::set($cKey, $hashTable);
+        }
+        echo '<pre>';
+        print_r($hashTable);
+        echo '<pre>';
     }
 }

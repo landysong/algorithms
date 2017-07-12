@@ -17,5 +17,8 @@ return [
         ':id'   => ['index/hello', ['method' => 'get'], ['id' => '\d+']],
         ':name' => ['index/hello', ['method' => 'post']],
     ],
-
+    '/' => 'index',
+    'hash' => 'index/hash',
+    'quicksort' => 'index/quickSort',
+    'binarysearch' => 'index/binarySearch'
 ];

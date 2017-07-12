@@ -37,7 +37,7 @@ function get_split_word($statement, $num = null)
 
 function send_mail($toemail, $subject, $body)
 {
-    if(empty($toemail) || empty($subject) || empty($body)) return false;
+    if (empty($toemail) || empty($subject) || empty($body)) return false;
     $mail = \app\common\extend\PHPMailer::getInstance();
 
     //是否启用smtp的debug进行调试 开发环境建议开启 生产环境注释掉即可 默认关闭debug调试模式
@@ -108,4 +108,100 @@ function send_mail($toemail, $subject, $body)
         //dump($mail->ErrorInfo);
         return false;
     }
+}
+
+/**
+ * 快速排序
+ * @param array $arr
+ * @return array
+ */
+function quick_sort($arr)
+{
+    $length = count($arr);
+    if ($length <= 1) {
+        return $arr;
+    }
+
+    $baseNum = $arr[0];
+    $leftArray = $rightArray = [];
+
+    foreach ($arr as $k => $v) {
+        if ($arr[$k] < $baseNum) {
+            $leftArray[] = $v;
+        }
+        if ($arr[$k] > $baseNum) {
+            $rightArray[] = $v;
+        }
+    }
+
+    $leftArray = quick_sort($leftArray);
+    $rightArray = quick_sort($rightArray);
+
+    return array_merge($leftArray, array($baseNum), $rightArray);
+}
+
+/**
+ * generate_rand_sequence
+ * @param integer $len
+ * @return array
+ */
+function generate_rand_sequence($len)
+{
+    $sequence = $result = [];
+
+    for ($i = 0; $i < $len; $i++) {
+        $sequence[$i] = $i;
+    }
+
+    $end = $len - 1;
+
+    for ($i = 0; $i < $len; $i++) {
+        $num = rand(0, $end);
+        $result[] = $sequence[$num];
+        $sequence[$num] = $sequence[$end];
+        $end--;
+    }
+
+    return $result;
+}
+
+/**
+ * get_str_hash
+ * @param string $str
+ * @return int
+ */
+function get_str_hash($str)
+{
+    $len = strlen($str);
+    $hash = 5381;
+
+    for ($i = 0; $i < $len; $i++) {
+        $hash += ($hash << 5) + ord($str{$i});
+    }
+
+    return $hash & 0x7FFFFFFF;
+}
+
+/**
+ * binary_search
+ * @param array $arr
+ * @param integer $value
+ * @return bool|int
+ */
+function binary_search($arr, $value)
+{
+    $len = count($arr);
+    $left = 0;
+    $right = $len - 1;
+    while ($left <= $right) {
+        $middle = $left + (($right - $left) >> 1);
+        if ($arr[$middle] > $value) {
+            $right = $middle - 1;
+        } elseif ($arr[$middle] < $value) {
+            $left = $middle + 1;
+        } else {
+            return $middle;
+        }
+    }
+    return false;
 }
