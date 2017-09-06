@@ -5,9 +5,12 @@ namespace app\index\controller;
 use app\common\extend\API;
 use app\common\extend\Classifier;
 use app\common\extend\Queue;
+use app\common\extend\SpellCorrect;
 use think\Cache;
+use think\Controller;
+use think\View;
 
-class Index
+class Index extends Controller
 {
     public function index()
     {
@@ -54,6 +57,8 @@ class Index
     public function quickSort()
     {
         $arr = generate_rand_sequence( 20);
+        print_r($arr);
+        echo '<br><br>';
         print_r(quick_sort($arr));
     }
 
@@ -67,7 +72,7 @@ class Index
     {
         $cKey = get_str_hash('Example,5,20');
         $hashTable = Cache::get($cKey);
-        if (!empty($hashTable)) {
+        if (empty($hashTable)) {
             $r = model('Example')->page(5, 20)->select();
             foreach ($r as $k => $v) {
                 $hashTable[get_str_hash($v['title'])] = $v['title'];
@@ -76,6 +81,22 @@ class Index
         }
         echo '<pre>';
         print_r($hashTable);
-        echo '<pre>';
     }
+
+    public function getSplitWord()
+    {
+        $string = '北欧床实木风格双人床日式现代简约实木 床 婚床1.8米1.5主卧家具';
+        print_r(get_split_word($string));
+    }
+
+    public function spellCorrect()
+    {
+        $word = input('post.word', '', 'trim');
+        if (!empty($word)) {
+            $spellCorrect = new SpellCorrect('../public/dict/big.txt');
+            $this->assign('result', $spellCorrect->correct($word));
+        }
+        return view();
+    }
+
 }

@@ -25,6 +25,7 @@ function get_split_word($statement, $num = null)
     $pscws->set_ignore(true);
     $pscws->send_text($statement);
     $result = $pscws->get_tops($num);
+//    $result = $pscws->get_result();
     $pscws->close();
 
     $words = array();
@@ -122,7 +123,7 @@ function quick_sort($arr)
         return $arr;
     }
 
-    $baseNum = $arr[0];
+    $baseNum = isset($arr[0]) ? $arr[0] : '';
     $leftArray = $rightArray = [];
 
     foreach ($arr as $k => $v) {
